@@ -1,6 +1,9 @@
 template <typename T>
 ArrayStack<T>::ArrayStack(int i) {
     // TODO
+    maxSize = i;
+    this->length = 0;
+    buffer = new T[maxSize];
 }
 
 template <typename T>
@@ -11,7 +14,7 @@ ArrayStack<T>::ArrayStack(const ArrayStack<T>& copyObj) {
 template <typename T>
 ArrayStack<T>& ArrayStack<T>::operator=(const ArrayStack<T>& rightObj) {
     if (this != &rightObj) {
-        clear();
+        delete[] buffer;
         copy(rightObj);
     }
     return *this;
@@ -19,17 +22,25 @@ ArrayStack<T>& ArrayStack<T>::operator=(const ArrayStack<T>& rightObj) {
 
 template <typename T>
 ArrayStack<T>::~ArrayStack() {
-    clear();
+    delete[] buffer;
 }
 
 template <typename T>
 void ArrayStack<T>::clear() {
     // TODO
+    this->length = 0;
 }
 
 template <typename T>
 void ArrayStack<T>::copy(const ArrayStack<T>& copyObj) {
     // TODO
+    maxSize = copyObj.maxSize;
+    this->length = copyObj.length;
+    buffer = new T[maxSize];
+
+    for (int i = 0; i < this->length; i++) {
+        buffer[i] = copyObj.buffer[i];
+    }
 }
 
 template <typename T>
@@ -55,27 +66,62 @@ bool ArrayStack<T>::isFull() const {
 template <typename T>
 T ArrayStack<T>::peek() const {
     // TODO
+    if (isEmpty()) {
+        throw string("Cannot peek, empty stack.");
+    }
+    return buffer[this->length - 1];
 }
 
 template <typename T>
 void ArrayStack<T>::pop() {
     // TODO
+    if (isEmpty()) {
+        throw string("Cannot pop,empty stack.");
+    }
+    this->length--;
 }
 
 template <typename T>
 void ArrayStack<T>::push(const T& elem) {
     // TODO
+    if (isFull()) {
+        throw string("Cannot push, full stack.");
+    }
+    buffer[this->length] = elem;
+    this->length++;
 }
 
 template <typename T>
 void ArrayStack<T>::rotate(typename Stack<T>::Direction dir) {
     // TODO
+    if (isEmpty()) {
+        throw string("Stack is empty, Cannot rotate");
+    }
+
+    if (this->length == 1) {
+        return;
+    }
+
+    if (dir == Stack<T>::RIGHT) {
+        T temp = buffer[this->length - 1];
+        for (int i = this->length - 1; i > 0; i--) {
+            buffer[i] = buffer[i - 1];
+        }
+        buffer[0] = temp;
+    }
+    else {
+        T temp = buffer[0];
+        for (int i = 0; i < this->length - 1; i++) {
+            buffer[i] = buffer[i + 1];
+        }
+        buffer[this->length - 1] = temp;
+    }
 }
 
 template <typename T>
 ostream& operator<<(ostream& outStream, const ArrayStack<T>& myObj) {
     if (myObj.isEmpty()) {
-        outStream << "Stack is empty, no elements to display.\n";
+        outStream << "Stack is empty\n";
     }
     else {
         for (int i = myObj.length - 1; i >= 0; i--) {
