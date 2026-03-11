@@ -7,10 +7,9 @@ ArrayStack<T>::ArrayStack(int i) {
 }
 
 template <typename T>
-ArrayStack<T>::ArrayStack(const ArrayStack<T>& copyObj) {
+ArrayStack<T>::ArrayStack(const ArrayStack<T>& copyObj) : buffer(nullptr), maxSize(0) {
     copy(copyObj);
 }
-
 template <typename T>
 ArrayStack<T>& ArrayStack<T>::operator=(const ArrayStack<T>& rightObj) {
     if (this != &rightObj) {
